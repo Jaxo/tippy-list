@@ -1,0 +1,61 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nested Tippies</title>
+<script src="https://unpkg.com/@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<script defer src="https://jaxo.github.io/tippy-list/tippy-list.js"></script>
+
+<style>
+#test {
+   width:100px;height:100px;background-color:#006A4E;display: inline-block;
+}
+#test + textarea {
+   height:100px;background-color:#F6F6F6;resize:none;border:none;outline:none;
+   width: 300px;
+}
+</style>
+
+<script>
+function clicked(evt) {
+   res.value += "\n\u25e6 clicked on " + evt.target.id;
+   res.scrollTop = res.scrollHeight;
+}
+</script>
+</head>
+
+<body>
+<div id="test"></div>
+<textarea id="res" readonly>
+Hover the green rectangle to the left,
+click on the active items...
+</textarea>
+<ul is="tippy-list" select="#test" onItemClicked="clicked">
+  <li id="a1">Item 1</li>
+  <li id="a2">Item 2
+    <ul id="ab">
+      <li id="ab1">2) Item 1
+         <ul id="abc">
+           <li id="abc1">2.1) Item 1</li>
+           <li id="abc2">2.1) Item 2</li>
+         </ul>
+      </li>
+      <li id="ab2">2) Item 2</li>
+      <li id="ab3">2) Item 3
+         <ul id="abd">
+           <li id="abd1">2.3) Item 1</li>
+           <li id="abd2">2.3) Item 2</li>
+         </ul>
+      </li>
+      <li id="ab4">2) Item 4</li>
+      <li id="ab5">2) Item 5</li>
+    </ul>
+  </li>
+  <li id="a3">Item 3</li>
+  <li id="a4">Item 4</li>
+</ul>
+</body>
+</html>
+
