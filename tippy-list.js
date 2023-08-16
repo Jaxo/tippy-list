@@ -4,41 +4,63 @@
       "tippy-list",
       class extends HTMLUListElement {
          static #slot;
+         static #scope = null;
+         static #actionsList;
          static {
             this.#slot = document.createElement("DIV");
             this.#slot.id = "tippy-lists";
+            this.#actionsList = {
+               onitemclicked: null,
+               onlistclicked: null
+            };
             document.documentElement.querySelector("head").insertAdjacentHTML(
                "beforeend",
-               "<style>" +
+               "<style>@layer tippy-lists-default {" +
                "#tippy-lists ul" +
                   "{width:80px;padding-left:0;margin:0;}" +
                "#tippy-lists ul>li" +
                   "{display:inline-block;position:relative;width:100%;}" +
+               "#tippy-lists ul > li:hover" +
+                  "{font-weight:bold;cursor:pointer}" +
                "#tippy-lists ul > li.list" +
                   "{display:flex;justify-content:space-between;}" +
+               "#tippy-lists ul > li.list:hover" +
+                  "{font-weight:normal;cursor:default;}" +
                "#tippy-lists ul > li.list:after" +
                   "{content: \"\\25B8\";}" +
-               "</style>"
+               "}</style>"
             );
             document.documentElement.querySelector("body").appendChild(
                this.#slot
             );
             this.#slot.addEventListener(
-               "click", (evt) => {
-                   this.#slot.dispatchEvent(
-                      new CustomEvent("change", { detail: {evt: evt} })
-                   );
-               }
+               "click",
+               (evt) => {
+                  let fct;
+                  evt.stopPropagation();
+                  if (evt.target.classList.contains('list')) {
+                     fct = this.#actionsList["onlistclicked"];
+                  }else {
+                     fct = this.#actionsList["onitemclicked"];
+                  }
+                  fct && (this.#scope || window)[fct](evt);
+               },
+               true  // capturing phase
             );
          }
+         static set #actions(attributes) {
+            for (const k in this.#actionsList) {
+               this.#actionsList[k] = attributes.getNamedItem(k)?.value || null;
+            }
+         }
          #isInited = false;
-         #listener = (evt) => { console.log(evt) };
+         set scope(obj) {  // scoped callbacks (onXxxxClicked)
+           this.constructor.#scope = obj;
+         }
          connectedCallback() {
             if (!this.#isInited) {
                this.#isInited = true;
-               this.constructor.#slot.addEventListener(
-                  "change", (evt)=>this.#listener(evt.detail.evt)
-               );
+               this.constructor.#actions = this.attributes;
                this.#tippyfy(
                   document.documentElement.querySelector(
                      this.getAttribute("select")
@@ -56,7 +78,7 @@
             const slot = this.constructor.#slot;
             let ref = instance.popper?.querySelector("ul>li>ul").parentNode;
             do {
-               if (ref) ref.classList.add("list");
+               ref && ref.classList.add("list");
                tippy(
                   ref || instance, {
                      ...{
