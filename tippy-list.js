@@ -53,10 +53,11 @@
                this.#actionsList[k] = attributes.getNamedItem(k)?.value || null;
             }
          }
-         #isInited = false;
-         set scope(obj) {  // scoped callbacks (onXxxxClicked)
-           this.constructor.#scope = obj;
+         static set scope(obj) {  // scoped callbacks (onXxxxClicked)
+            this.#scope = obj;
          }
+
+         #isInited = false;
          connectedCallback() {
             if (!this.#isInited) {
                this.#isInited = true;
