@@ -13,15 +13,15 @@
    width:100px;height:100px;background-color:#006A4E;display: inline-block;
 }
 #test + textarea {
-   height:100px;background-color:#F6F6F6;resize:none;border:none;outline:none;
-   width: 300px;
+   width:300px;height:100px;background-color:#F6F6F6;
+   resize:none;border:none;outline:none;
 }
 </style>
 
 <script>
 function clicked(evt) {
    res.value += "\n\u25e6 clicked on " + evt.target.id;
-   res.scrollTop = res.scrollHeight;
+   res.scrollTop = res.scrollHeight; // aka autoscroll
 }
 </script>
 </head>
