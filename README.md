@@ -19,7 +19,23 @@ function clicked(evt) {
    res.scrollTop = res.scrollHeight; // aka autoscroll
 }
 </script>
-...
+[...]
 <ul is="tippy-list" select="#test" onItemClicked="clicked">
 ```
 To not pollute the global scope, a `scope` setter method is provided.
+Replacing the script above by:
+
+```
+<script>
+(async function() {
+   await customElements.whenDefined("tippy-list");
+   customElements.get("tippy-list").scope = {
+      clicked: (evt) => {
+         res.value += "\n\u25e6 clicked on " + evt.target.id;
+         res.scrollTop = res.scrollHeight; // aka autoscroll
+      }
+   }
+}());
+</script>
+```
+scopes the *clicked* function, removing it from the global scope.
