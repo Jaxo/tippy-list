@@ -53,6 +53,14 @@
                this.#actionsList[k] = attributes.getNamedItem(k)?.value || null;
             }
          }
+         static hideAll() {
+            this.#slot.querySelectorAll(":scope > div").forEach(
+               (div) => {
+                  div._tippy.setProps({onHide:()=>true});
+                  div._tippy.hide();
+               }
+            );
+         }
          static set scope(obj) {  // scoped callbacks (onXxxxClicked)
             this.#scope = obj;
          }
